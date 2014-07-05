@@ -7,7 +7,7 @@ LIBPTHREAD = -lpthread
 all: $(EXEC)
 
 $(EXEC): $(OBJS)
-	$(CC) $(LDFLAGS) -o $@ $(OBJS) $(LDLIBS) $(LIBPTHREAD)
+	$(CC) -g -Wall $(LDFLAGS) -o $@ $(OBJS) $(LDLIBS) $(LIBPTHREAD)
 
 clean: 
 	-rm -f $(EXEC) *.elf *.gdb *.o *~

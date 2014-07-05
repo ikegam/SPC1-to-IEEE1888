@@ -685,8 +685,8 @@ void* smart_tap_thread(void* args){
 
 void init(){
   int i;
-  
-  load_config("/etc/config/SPC1_1888GW.conf");
+
+  load_config("./SPC1_1888GW.conf");
 
   for(i=0;i<MAXIMUM_SPC1_TAP;i++){
     memset(&m_tap[i],0,sizeof(m_tap[i]));

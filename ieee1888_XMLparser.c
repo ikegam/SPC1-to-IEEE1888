@@ -96,7 +96,7 @@ const char* parse_elementXML(const char* strbuf, int len, XMLNode* node){
   }else if(*p=='/'){
     node->type=XML_ELEMENT_END;
     p++; len--;
-    
+
     q=buffer;
     for(i=0;*p!=':' && *p!='>' && i<MAX_XML_NODE_NS_LEN && i<MAX_XML_NODE_NAME_LEN;i++){
       *(q++)=*(p++); len--;
@@ -116,9 +116,9 @@ const char* parse_elementXML(const char* strbuf, int len, XMLNode* node){
       q=buffer; p++; len--;
       for(i=0;*p!='>' && i<MAX_XML_NODE_NAME_LEN;i++){
         *(q++)=*(p++); len--;
-	if(len<=0){
+        if(len<=0){
           return NULL;
-	}
+        }
       }
       *q=0;
       strncpy(node->name,buffer,MAX_XML_NODE_NAME_LEN);
@@ -132,7 +132,7 @@ const char* parse_elementXML(const char* strbuf, int len, XMLNode* node){
 
   }else{
     node->type=XML_ELEMENT_BEGIN;
-    
+
     q=buffer;
     for(i=0;*p!=':' && *p!=' ' && *p!='>' && *p!='/' && i<MAX_XML_NODE_NS_LEN && i<MAX_XML_NODE_NAME_LEN;i++){
       *(q++)=*(p++); len--;
@@ -152,9 +152,9 @@ const char* parse_elementXML(const char* strbuf, int len, XMLNode* node){
       q=buffer; p++; len--;
       for(i=0;*p!=' ' && *p!='>' && i<MAX_XML_NODE_NAME_LEN;i++){
         *(q++)=*(p++); len--;
-	if(len<=0){
-	  return NULL;
-	}
+        if(len<=0){
+          return NULL;
+        }
       }
       *q=0;
       strncpy(node->name,buffer,MAX_XML_NODE_NAME_LEN);
@@ -290,7 +290,7 @@ const char* parseXML(const char* strbuf, int len, XMLNode* node){
 	}
 	
 	// eats blanks
-	while(*p==' '){
+	while(*p==' ' || *p=='\r' || *p=='\n'  ){
 	  p++; len--;
 	  if(len<=0){
             return NULL;
@@ -328,6 +328,7 @@ const char* parseXML(const char* strbuf, int len, XMLNode* node){
 	  break;
 
 	}
+
 
 	node->type=XML_OTHERS;
 	return p;
@@ -388,13 +389,15 @@ const char* ieee1888_parseXML_key(const char* strbuf, int len, ieee1888_key* key
 	return NULL;
       }
       break;
+    case XML_TEXT:
+      break;
 
     case XML_ELEMENT_END:
       return q;
     
     default: 
       // error
-      fprintf(stderr,"Fatal error: unknown error, maybe the XML is broken.");
+      fprintf(stderr,"Fatal error: unknown error in processing key, maybe the XML is broken.\n");
       q++;
     }
     len-=(q-p);
@@ -433,7 +436,7 @@ const char* ieee1888_parseXML_OK(const char* strbuf, int len, ieee1888_OK* ok){
     
     default: 
       // error
-      fprintf(stderr,"Fatal error: unknown error, maybe the XML is broken.");
+      fprintf(stderr,"Fatal error: unknown error in processing OK, maybe the XML is broken.\n");
       q++;
     }
     len-=(q-p);
@@ -481,7 +484,7 @@ const char* ieee1888_parseXML_error(const char* strbuf, int len, ieee1888_error*
 
     default: 
       // error
-      fprintf(stderr,"Fatal error: unknown error, maybe the XML is broken.");
+      fprintf(stderr,"Fatal error: unknown error in processing error, maybe the XML is broken.\n");
       q++;
     }
     len-=(q-p);
@@ -571,7 +574,7 @@ const char* ieee1888_parseXML_query(const char* strbuf, int len, ieee1888_query*
 
     default: 
       // error
-      fprintf(stderr,"Fatal error: unknown error, maybe the XML is broken.");
+      fprintf(stderr,"Fatal error: unknown error in processing query, maybe the XML is broken.\n");
       q++;
     }
     len-=(q-p);
@@ -638,7 +641,7 @@ const char* ieee1888_parseXML_header(const char* strbuf, int len, ieee1888_heade
 
     default: 
       // error
-      fprintf(stderr,"Fatal error: unknown error, maybe the XML is broken.");
+      fprintf(stderr,"Fatal error: unknown error in processing header, maybe the XML is broken.\n");
       q++;
     }
     len-=(q-p);
@@ -685,7 +688,7 @@ const char* ieee1888_parseXML_value(const char* strbuf, int len, ieee1888_value*
 
     default: 
       // error
-      fprintf(stderr,"Fatal error: unknown error, maybe the XML is broken.");
+      fprintf(stderr,"Fatal error: unknown error in processing value, maybe the XML is broken.\n");
       q++;
     }
     len-=(q-p);
@@ -757,7 +760,7 @@ const char* ieee1888_parseXML_point(const char* strbuf, int len, ieee1888_point*
 
     default: 
       // error
-      fprintf(stderr,"Fatal error: unknown error, maybe the XML is broken.");
+      fprintf(stderr,"Fatal error: unknown error in processing point, maybe the XML is broken.\n");
       q++;
     }
     len-=(q-p);
@@ -1077,7 +1080,7 @@ const char* ieee1888_soap_parse(const char* str_soap, int len, ieee1888_transpor
       // error
       // fprintf(stderr,"Fatal error: unknown error, maybe the XML is broken.");
       q++;
-    
+
     }
     len-=(q-p);
     p=q;
