@@ -196,7 +196,7 @@ void print_status_in_html(){
 	int col=0;
 	char buf[100];
 	char buf2[100];
-	FILE* fp=fopen("/home/www-data/index.html","w");
+	FILE* fp=fopen("/var/www/index.html","w");
 
 	if(fp==NULL){
 		return ;
@@ -539,7 +539,7 @@ int xbee_initialize(){
   
   memset(xbee_buffer,0,sizeof(xbee_buffer));
 
-  xbee_fd = open("/dev/ttyAM2", O_RDWR | O_NOCTTY | O_NDELAY);
+  xbee_fd = open("/dev/ttyUSB0", O_RDWR | O_NOCTTY | O_NDELAY);
   if(xbee_fd == -1){
     printf("ERROR: Unable to open /dev/ttyAM2");
     return -1;
@@ -581,16 +581,22 @@ void* smart_tap_thread(void* args){
     xbee_nbytes=0;
     xbee_bufptr = xbee_buffer;
     memset(xbee_buffer,0,sizeof(xbee_buffer));
-    while ((xbee_nbytes = read(xbee_fd, xbee_bufptr, xbee_buffer + sizeof(xbee_buffer) - xbee_bufptr - 1)) > 0){
-      xbee_bufptr += xbee_nbytes;
-      if (xbee_bufptr[-1] == '\n' || xbee_bufptr[-1] == '\r'){
-        break;
+
+    while ((xbee_nbytes = read(xbee_fd, xbee_bufptr,  1))) {
+      //printf("received %d %c\n", xbee_nbytes, xbee_buffer);
+      if (xbee_nbytes >= 0) {
+        xbee_bufptr += 1;
+        if (xbee_bufptr == '\n' || xbee_bufptr == '\r'){
+          break;
+        }
       }
     }
 
+    printf("%s\n", xbee_buffer);
+
     if(xbee_nbytes>0){
       xbee_buffer[xbee_nbytes-1]='\0';
-      printf("%s\n",xbee_buffer);
+      printf("%s\n", xbee_buffer);
 
       char tap_id[6];
       char port0[6];
@@ -1253,9 +1259,9 @@ ieee1888_transport* ieee1888_server_data(ieee1888_transport* request,char** args
 
 
 int main(int argc,char** argv){
-  
+
   init();
-  
+
   ieee1888_set_service_handlers(ieee1888_server_query,ieee1888_server_data);
   ieee1888_server_create(atoi(ieee1888_hosting_port));
 

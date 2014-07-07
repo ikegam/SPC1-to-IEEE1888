@@ -1,6 +1,9 @@
 EXEC = SPC1-to-1888
-OBJS = SPC1_to_1888.o ieee1888_XMLgenerator.o ieee1888_XMLparser.o ieee1888_server.o ieee1888_client.o ieee1888_object_factory.o ieee1888_util.o
+OBJS = SPC1_to_1888.o
 LIBPTHREAD = -lpthread
+LDLIBS = $(shell pkg-config --libs light1888)
+LDFLAGS = 
+CFLAGS = $(shell pkg-config --cflags light1888)
 
 # OBJS = IEEE1888UploadAgent.o GEmuNet.o GEmuNet-to-1888.o
 
